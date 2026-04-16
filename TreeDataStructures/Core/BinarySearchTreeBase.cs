@@ -316,9 +316,9 @@ public abstract class BinarySearchTreeBase<TKey, TValue, TNode>(IComparer<TKey>?
     private void CollectPreOrderReverse(TNode? node, List<TreeEntry<TKey, TValue>> result, int depth)
     {
         if (node == null) return;
+        result.Add(new TreeEntry<TKey, TValue>(node.Key, node.Value, depth));
         CollectPreOrderReverse(node.Right, result, depth + 1);
         CollectPreOrderReverse(node.Left, result, depth + 1);
-        result.Add(new TreeEntry<TKey, TValue>(node.Key, node.Value, depth));
     }
 
     public IEnumerable<TreeEntry<TKey, TValue>> PostOrderReverse()
@@ -331,9 +331,9 @@ public abstract class BinarySearchTreeBase<TKey, TValue, TNode>(IComparer<TKey>?
     private void CollectPostOrderReverse(TNode? node, List<TreeEntry<TKey, TValue>> result, int depth)
     {
         if (node == null) return;
-        result.Add(new TreeEntry<TKey, TValue>(node.Key, node.Value, depth));
         CollectPostOrderReverse(node.Right, result, depth + 1);
         CollectPostOrderReverse(node.Left, result, depth + 1);
+        result.Add(new TreeEntry<TKey, TValue>(node.Key, node.Value, depth));
     }
     
     public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()

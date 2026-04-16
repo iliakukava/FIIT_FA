@@ -1,10 +1,4 @@
-<<<<<<< HEAD
 ﻿using TreeDataStructures.Core;
-=======
-﻿using System.Diagnostics.CodeAnalysis;
-using TreeDataStructures.Core;
-using TreeDataStructures.Implementations.BST;
->>>>>>> 13cbb82 (trees tasks v1.0)
 
 namespace TreeDataStructures.Implementations.Treap;
 
