@@ -6,17 +6,16 @@ public class BinarySearchTree<TKey, TValue> : BinarySearchTreeBase<TKey, TValue,
 {
     protected override BstNode<TKey, TValue> CreateNode(TKey key, TValue value)
     {
-        throw new NotImplementedException();
+        return new BstNode<TKey, TValue>(key, value);
     }
-    
+
     protected override void OnNodeAdded(BstNode<TKey, TValue> newNode)
     {
-        throw new NotImplementedException();
+        // Для базового BST не требуется дополнительная логика при добавлении узла
     }
-    
-    protected override void OnNodeRemoved(BstNode<TKey, TValue>? parent, BstNode<TKey, TValue>? child)
+
+    protected override void OnNodeRemoved(BstNode<TKey, TValue>? parent, BstNode<TKey, TValue>? child, BstNode<TKey, TValue> deletedNode)
     {
-        throw new NotImplementedException();
+        // Для базового BST не требуется дополнительная логика при удалении узла
     }
-    
 }
