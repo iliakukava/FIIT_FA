@@ -10,48 +10,55 @@ public class AvlTree<TKey, TValue> : BinarySearchTreeBase<TKey, TValue, AvlNode<
 
     protected override void OnNodeAdded(AvlNode<TKey, TValue> newNode)
     {
-        Root = BalanceTree(Root);
+        RebalanceUpwards(newNode);
     }
 
     protected override void OnNodeRemoved(AvlNode<TKey, TValue>? parent, AvlNode<TKey, TValue>? child, AvlNode<TKey, TValue> deletedNode)
     {
-        Root = BalanceTree(Root);
+        RebalanceUpwards(parent);
     }
 
-    private AvlNode<TKey, TValue>? BalanceTree(AvlNode<TKey, TValue>? node)
+    private void RebalanceUpwards(AvlNode<TKey, TValue>? node)
     {
-        if (node == null) return null;
-
-        node.Left = BalanceTree(node.Left);
-        node.Right = BalanceTree(node.Right);
-
-        UpdateHeight(node);
-        return BalanceNode(node);
-    }
-
-    private AvlNode<TKey, TValue> BalanceNode(AvlNode<TKey, TValue> node)
-    {
-        int balance = GetBalance(node);
-
-        if (balance > 1 && GetBalance(node.Left) >= 0)
-            return RotateRightSimple(node);
-
-        if (balance > 1 && GetBalance(node.Left) < 0)
+        AvlNode<TKey, TValue>? current = node;
+        while (current != null)
         {
-            node.Left = RotateLeftSimple(node.Left!);
-            return RotateRightSimple(node);
+            UpdateHeight(current);
+
+            int balance = GetBalance(current);
+            if (balance > 1)
+            {
+                if (GetBalance(current.Left) < 0)
+                {
+                    RotateLeft(current.Left!);
+                    UpdateHeight(current.Left!);
+                }
+
+                RotateRight(current);
+                UpdateHeight(current);
+                if (current.Parent != null)
+                {
+                    UpdateHeight(current.Parent);
+                }
+            }
+            else if (balance < -1)
+            {
+                if (GetBalance(current.Right) > 0)
+                {
+                    RotateRight(current.Right!);
+                    UpdateHeight(current.Right!);
+                }
+
+                RotateLeft(current);
+                UpdateHeight(current);
+                if (current.Parent != null)
+                {
+                    UpdateHeight(current.Parent);
+                }
+            }
+
+            current = current.Parent;
         }
-
-        if (balance < -1 && GetBalance(node.Right) <= 0)
-            return RotateLeftSimple(node);
-
-        if (balance < -1 && GetBalance(node.Right) > 0)
-        {
-            node.Right = RotateRightSimple(node.Right!);
-            return RotateLeftSimple(node);
-        }
-
-        return node;
     }
 
     private static void UpdateHeight(AvlNode<TKey, TValue> node)
@@ -65,39 +72,5 @@ public class AvlTree<TKey, TValue> : BinarySearchTreeBase<TKey, TValue, AvlNode<
     {
         if (node == null) return 0;
         return (node.Left?.Height ?? 0) - (node.Right?.Height ?? 0);
-    }
-
-    private AvlNode<TKey, TValue> RotateRightSimple(AvlNode<TKey, TValue> y)
-    {
-        AvlNode<TKey, TValue> x = y.Left!;
-
-        y.Left = x.Right;
-        if (y.Left != null) y.Left.Parent = y;
-
-        x.Right = y;
-        x.Parent = y.Parent;
-        y.Parent = x;
-
-        UpdateHeight(y);
-        UpdateHeight(x);
-
-        return x;
-    }
-
-    private AvlNode<TKey, TValue> RotateLeftSimple(AvlNode<TKey, TValue> x)
-    {
-        AvlNode<TKey, TValue> y = x.Right!;
-
-        x.Right = y.Left;
-        if (x.Right != null) x.Right.Parent = x;
-
-        y.Left = x;
-        y.Parent = x.Parent;
-        x.Parent = y;
-
-        UpdateHeight(x);
-        UpdateHeight(y);
-
-        return y;
     }
 }
